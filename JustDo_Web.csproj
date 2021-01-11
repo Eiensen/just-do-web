@@ -46,4 +46,6 @@
     </ItemGroup>
   </Target>
 
+  <ProjectExtensions><VisualStudio><UserProperties clientapp_4package-lock_1json__JsonSchema="typescrip" /></VisualStudio></ProjectExtensions>
+
 </Project>
