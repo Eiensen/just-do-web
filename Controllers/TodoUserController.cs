@@ -22,7 +22,7 @@ namespace JustDo_Web.Controllers
         [HttpPost]
         [Route("Register")]
         //POST : /api/TodoUser/Register
-        public async Task<Object> PostTodoUser(TodoUserModel model)
+        public async Task<Object> Register(TodoUserModel model)
         {
             var todoUser = new TodoUser()
             {
@@ -42,6 +42,28 @@ namespace JustDo_Web.Controllers
                 throw ex;
             }
            
+        }
+
+        [HttpPost]
+        [Route("Login")]
+        //[ValidateAntiForgeryToken]
+        //POST : /api/TodoUser/Login
+        public async Task<Object> Login(TodoUserModel model)
+        {
+            
+            try
+            {
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, true, false);
+
+                //await _signInManager.SignInAsync(todoUser, false);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
     }
 }
