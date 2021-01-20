@@ -1,41 +1,25 @@
-﻿using JustDo_Web.Interfaces;
-using JustDo_Web.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace JustDo_Web.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
-    {
-        private readonly IJwtAuthManager jwtAuthManager;
-
-        public ValuesController(IJwtAuthManager jwtAuthManager)
-        {
-            this.jwtAuthManager = jwtAuthManager;
-        }
-
-        // GET: api/<ValuesController>
+    {       
+        
         [HttpGet]
-        public IEnumerable<string> Get()
+        [Authorize]
+        [Route("string")]
+        public string GetValues()
         {
-            return new string[] { "value1", "value2" };
+            return "value for Authorization users";
         }
-        [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public IActionResult AuthenticateToken([FromBody] TodoUserModel model)
-        {
-            var token = jwtAuthManager.Authenticate(model.Email, model.Password);
-            if (token == null)
-                return Unauthorized();
-
-            return Ok(token);
-        }
-      
     }
 }

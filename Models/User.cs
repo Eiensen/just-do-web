@@ -3,7 +3,7 @@
 
 namespace JustDo_Web.Models
 {
-    public class TodoUser: IdentityUser
+    public class User: IdentityUser
     {
        
     }

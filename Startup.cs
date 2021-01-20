@@ -1,16 +1,20 @@
 using JustDo_Web.Interfaces;
 using JustDo_Web.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace JustDo_Web
 {
@@ -26,11 +30,13 @@ namespace JustDo_Web
         
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<TodoUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationContext>();
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
 
             services.AddAuthentication(options =>
             {
@@ -40,20 +46,23 @@ namespace JustDo_Web
             })
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
-                options.RequireHttpsMetadata = true;
+                options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {                    
                     ValidateIssuer = true,                    
-                    ValidIssuer = AuthenticationOptions.Issuer,                    
+                    ValidIssuer = Configuration["Jwt:Issuer"],                    
                     ValidateAudience = true, 
-                    ValidAudience = AuthenticationOptions.Audience,                   
-                    IssuerSigningKey = AuthenticationOptions.GetSymmetricSecurityKey(),                   
+                    ValidAudience = Configuration["Jwt:Issuer"],                   
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
+                    (
+                        Configuration["Jwt:Key"]
+                    )),                   
                     ValidateIssuerSigningKey = true,
                 };
              });
 
-            services.AddSingleton<IJwtAuthManager>(new JwtAuthManager(AuthenticationOptions.Key));
+            services.AddScoped<IJwtGenerator, JwtGenerator>();
 
             //Configuration password settings to check Api in Postman
             services.Configure<IdentityOptions>(options =>
@@ -65,8 +74,8 @@ namespace JustDo_Web
                 options.Password.RequireDigit = false;
             });
 
+           
             services.AddControllersWithViews();
-
            
             services.AddSpaStaticFiles(configuration =>
             {
@@ -93,6 +102,7 @@ namespace JustDo_Web
 
             app.UseRouting();
 
+            
             app.UseAuthentication();
             app.UseAuthorization();
 
