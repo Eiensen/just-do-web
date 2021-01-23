@@ -19,14 +19,18 @@ namespace JustDo_Web.Models
         {
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
                     (
-                        configuration["Jwt:Issuer"]
+                        configuration["Jwt:Key"]
                     ));
             this._configuration = configuration;
         }
 
         public string CreateToken(User user)
-        {            
-            var claims = new List<Claim>() { new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()) };
+        {
+            var claims = new List<Claim>()
+            {
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id)
+            };
+
             var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
             var tokenHandler = new JwtSecurityTokenHandler();            
             var tokenDescriptor = new SecurityTokenDescriptor

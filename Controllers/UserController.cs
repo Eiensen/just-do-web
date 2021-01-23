@@ -39,8 +39,6 @@ namespace JustDo_Web.Controllers
             {
                 var result = await _userManager.CreateAsync(todoUser, model.Password);
 
-                //await _signInManager.SignInAsync(todoUser, false);
-
                 return Ok(result);
             }
             catch (Exception ex)
@@ -53,7 +51,7 @@ namespace JustDo_Web.Controllers
         [HttpPost]
         [Route("Login")]       
         //POST : /api/User/Login
-        public async Task<ActionResult/*<UserModel>*/> Login([FromBody]UserModel model)
+        public async Task<ActionResult> Login([FromBody]UserModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if(user == null)
@@ -65,11 +63,6 @@ namespace JustDo_Web.Controllers
 
             if (result.Succeeded)
             {
-                //return new UserModel
-                //{
-                //    Email = user.Email,
-                //    Token = _jwtGenerator.CreateToken(user)
-                //};
                 return Ok(new { Token = _jwtGenerator.CreateToken(user)});
             }
 

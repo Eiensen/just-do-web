@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,7 +71,6 @@ namespace JustDo_Web
                 options.Password.RequireDigit = false;
             });
 
-           
             services.AddControllersWithViews();
            
             services.AddSpaStaticFiles(configuration =>
@@ -105,6 +101,7 @@ namespace JustDo_Web
             
             app.UseAuthentication();
             app.UseAuthorization();
+                     
 
             app.UseEndpoints(endpoints =>
             {
