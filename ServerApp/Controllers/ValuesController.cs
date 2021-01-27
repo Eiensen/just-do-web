@@ -19,7 +19,7 @@ namespace JustDo_Web.Controllers
         [Route("string")]
         public string GetValues()
         {
-            return "value for Authorization users";
+            return "value for Authorized users";
         }
     }
 }

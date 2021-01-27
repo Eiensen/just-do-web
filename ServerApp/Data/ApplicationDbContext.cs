@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using JustDo_Web.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace JustDo_Web.Models
+namespace JustDo_Web.Data
 {
     public class ApplicationDbContext: IdentityDbContext<User>
     {

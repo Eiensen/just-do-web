@@ -1,4 +1,4 @@
-﻿using JustDo_Web.Interfaces;
+﻿using JustDo_Web.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -8,14 +8,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace JustDo_Web.Models
+namespace JustDo_Web.Services.Jwt
 {
-    public class JwtGenerator : IJwtGenerator
+    public class JwtServece : IJwtServece
     {
         private readonly SymmetricSecurityKey _key;
         private readonly IConfiguration _configuration;
 
-        public JwtGenerator(IConfiguration configuration)
+        public JwtServece(IConfiguration configuration)
         {
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes
                     (
@@ -38,7 +38,7 @@ namespace JustDo_Web.Models
                 Subject = new ClaimsIdentity(claims),
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Issuer"],
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddMonths(6),
                 SigningCredentials = credentials
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

@@ -1,5 +1,7 @@
-using JustDo_Web.Interfaces;
+using JustDo_Web.Data;
 using JustDo_Web.Models;
+using JustDo_Web.ServerApp.Services.Validators;
+using JustDo_Web.Services.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -59,16 +61,19 @@ namespace JustDo_Web
                 };
              });
 
-            services.AddScoped<IJwtGenerator, JwtGenerator>();
+            services.AddScoped<IJwtServece, JwtServece>();
 
-            //Configuration password settings to check Api in Postman
+            //services.AddTransient<IPasswordValidator<User>,
+            //    PasswordValidator>(serv => new PasswordValidator(2));
+
             services.Configure<IdentityOptions>(options =>
             {
-                options.Password.RequiredLength = 8;                
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 2;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;                
+                options.Password.RequireDigit = true;
             });
 
             services.AddControllersWithViews();
