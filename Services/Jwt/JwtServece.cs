@@ -30,7 +30,6 @@ namespace JustDo_Web.Services.Jwt
             {
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id)
             };
-
             var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
             var tokenHandler = new JwtSecurityTokenHandler();            
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -41,8 +40,7 @@ namespace JustDo_Web.Services.Jwt
                 Expires = DateTime.UtcNow.AddMonths(6),
                 SigningCredentials = credentials
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            
+            var token = tokenHandler.CreateToken(tokenDescriptor);            
             return tokenHandler.WriteToken(token);
         }
     }

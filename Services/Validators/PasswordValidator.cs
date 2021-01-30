@@ -8,26 +8,26 @@ using System.Threading.Tasks;
 
 namespace JustDo_Web.ServerApp.Services.Validators
 {
-    public class PasswordValidator: IPasswordValidator<User>
+    public class PasswordValidator : IPasswordValidator<User>
     {
-        public int RequiredUppercaseLetters { get; set; }
+        private int requiredUppercaseLetters;
 
         public PasswordValidator(int letters)
         {
-            RequiredUppercaseLetters = letters;
+            requiredUppercaseLetters = letters;
         }
         public Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user, string password)
         {
             LinkedList<IdentityError> errors = new LinkedList<IdentityError>();
-
-            //todo: доделать правильную проверку на наличие 2 и более заглавных букв в пароле
-            string pattern = "^[A-Z]{2,}$"; // на данный момент шаблон не рабочий
-
-            if(!Regex.IsMatch(password, pattern))
+            string patternSeparate = @"([A-Z]{1,})";
+            string patternTogether = @"([A-Z]{2,})";
+            var matchSeparate = Regex.Matches(password, patternSeparate);
+            var matchTogether = Regex.Matches(password, patternTogether);
+            if (matchSeparate.Count < requiredUppercaseLetters && matchTogether.Count < 1)
             {
-                errors.AddFirst(new IdentityError
+                errors.AddLast(new IdentityError
                 {
-                    Description = $"The password should contain {RequiredUppercaseLetters} or more uppercase letters"
+                    Description = $"The password should contain {requiredUppercaseLetters} or more uppercase letters"
                 });
             }
             return Task.FromResult(errors.Count == 0 ?

@@ -25,7 +25,6 @@ namespace JustDo_Web
         }
 
         public IConfiguration Configuration { get; }
-
         
         public void ConfigureServices(IServiceCollection services)
         {
@@ -35,7 +34,6 @@ namespace JustDo_Web
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
 
             services.AddAuthentication(options =>
             {
@@ -62,10 +60,7 @@ namespace JustDo_Web
              });
 
             services.AddScoped<IJwtServece, JwtServece>();
-
-            //services.AddTransient<IPasswordValidator<User>,
-            //    PasswordValidator>(serv => new PasswordValidator(2));
-
+            
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 8;
@@ -76,6 +71,9 @@ namespace JustDo_Web
                 options.Password.RequireDigit = true;
             });
 
+            services.AddTransient<IPasswordValidator<User>,
+                PasswordValidator>(serv => new PasswordValidator(2));
+
             services.AddControllersWithViews();
            
             services.AddSpaStaticFiles(configuration =>
@@ -83,7 +81,6 @@ namespace JustDo_Web
                 configuration.RootPath = "ClientApp/build";
             });
         }
-
       
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -100,13 +97,9 @@ namespace JustDo_Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-
-            app.UseRouting();
-
-            
+            app.UseRouting();            
             app.UseAuthentication();
-            app.UseAuthorization();
-                     
+            app.UseAuthorization();                    
 
             app.UseEndpoints(endpoints =>
             {
