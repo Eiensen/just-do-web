@@ -1,6 +1,6 @@
 using JustDo_Web.Data;
 using JustDo_Web.Models;
-using JustDo_Web.ServerApp.Services.Validators;
+using JustDo_Web.Services.Validators;
 using JustDo_Web.Services.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -59,7 +59,7 @@ namespace JustDo_Web
                 };
              });
 
-            services.AddScoped<IJwtServece, JwtServece>();
+            services.AddScoped<IJwtService, JwtService>();
             
             services.Configure<IdentityOptions>(options =>
             {
