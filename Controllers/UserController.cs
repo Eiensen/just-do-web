@@ -1,10 +1,13 @@
-﻿using JustDo_Web.Models;
+﻿using JustDo_Web.Helpers;
+using JustDo_Web.Models;
 using JustDo_Web.ServerApp.Services.Validators;
 using JustDo_Web.Services.Jwt;
 using JustDo_Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace JustDo_Web.Controllers
@@ -34,12 +37,16 @@ namespace JustDo_Web.Controllers
 
             if (!EmailValidator.IsValidEmail(model.Email))
             {
-                return BadRequest($"{model.Email} is incorrect email string!");
+                var error = ErrorHelper.AddError($"{model.Email} is incorrect email string!");
+
+                return BadRequest(error);
             }
 
             if (model.Password != model.ConfirmPassword)
             {
-                return BadRequest("The Password and the ConfirmPassword must match!");
+                var error = ErrorHelper.AddError("The Password and the ConfirmPassword must match!");
+
+                return BadRequest(error);
             }
 
             var user = new User()
@@ -50,14 +57,14 @@ namespace JustDo_Web.Controllers
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                return Ok();
+                var error = ErrorHelper.AddIdentityErrors(result);
+
+                return BadRequest(error);
             }
-            else
-            {
-                return BadRequest(result.Errors);
-            }
+
+            return Ok();
         }
 
         [AllowAnonymous]
@@ -70,7 +77,9 @@ namespace JustDo_Web.Controllers
 
             if (user == null)
             {
-                return Unauthorized($"{model.Email} is not registered");
+                var error = ErrorHelper.AddError($"{model.Email} is not registered");
+
+                return BadRequest(error);
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
@@ -79,8 +88,12 @@ namespace JustDo_Web.Controllers
             {
                 return Ok(new { Token = _jwtGenerator.CreateToken(user) });
             }
+            else
+            {
+                var error = ErrorHelper.AddError("The password is incorrect.");
 
-            return Unauthorized();
+                return BadRequest(error);
+            }
         }
     }
 }
