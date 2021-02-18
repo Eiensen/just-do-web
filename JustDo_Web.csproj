@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\tsconfig.json" />
+    <None Remove="Helpers\ErrorHelper.cs~RFee859b7.TMP" />
   </ItemGroup>
 
   <ItemGroup>

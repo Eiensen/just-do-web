@@ -17,10 +17,14 @@ namespace JustDo_Web.Helpers
             return errors;
         }
 
-        public static string AddError(string description)
+        public static List<string> AddError(string description)
         {
-            var error = description;
-            return error;
+            var errors = new List<string>
+            {
+                description
+            };
+
+            return errors;
         }
     }
 }

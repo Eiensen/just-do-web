@@ -6,8 +6,6 @@ using JustDo_Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace JustDo_Web.Controllers
@@ -33,8 +31,6 @@ namespace JustDo_Web.Controllers
         //POST : /api/User/Register
         public async Task<ActionResult> Register(UserRegistration model)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
             if (!EmailValidator.IsValidEmail(model.Email))
             {
                 var error = ErrorHelper.AddError($"{model.Email} is incorrect email string!");
